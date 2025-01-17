@@ -29,11 +29,12 @@ class Oscillator:
         self.y = self.phi_to_y(self.phi)
         self.t0 = systime.time()
         
-    def __call__(self):
-        t1 = systime.time()
+    def __call__(self,t1=None):
+        if t1 is None:
+            t1 = systime.time()
         dt = t1 - self.t0
         self.t0 = t1
-        self.phi = self.phi + dt*self.omega
+        self.phi = self.phi + dt*self.omega*2
         if self.phi>2*np.pi or self.phi<0:
             self.omega = -1*self.omega
         # self.y = self.phi_to_y_sine(self.phi)
@@ -149,6 +150,9 @@ if args.sweep_slope>0:
     args.sweep_slope = True
     osc = Oscillator(period = args.sweep_period)
     args.noise_slope = osc()
+    if args.device == -1:
+        osc.t0 = 0
+    
 
 # Noise generator engine
 noise_gen = Noise_Generator((int(args.blocksize*args.blocks_to_prepare_in_advance),args.channels))
@@ -233,6 +237,8 @@ while run_loop:
     else:
         while callback.num_chunks_generated <= args.number_of_blocks_in_recording:
             callback()
+            if args.sweep_slope:
+                args.noise_slope = osc(t1=callback.next_i/args.samplerate)
             data = (callback.data*(2**15 - 1)).astype(np.int16)
             w.writeframes(data.tobytes())
 
