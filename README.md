@@ -10,10 +10,10 @@ Besides typical python packages such as numpy, this requires colorednoise, pylou
 
 ## Usage
 The following line will play pink noise in two channels for one hour using the default device that sounddevice can find on your computer:
-python noise_machine.py --duration 60 --noise_slope 1 --channels 2
+> python noise_machine.py --duration 60 --noise_slope 1 --channels 2
 
 The following line will write a 1-hour long .wav file with varying color noise in one channel. No sound will be played, the output goes straight to disk. To make things more fun, the PSD beta parameter is being swept back and forth in the range [-2,2] with a period of 10 minutes:
-python noise_machine.py --duration 60 --sweep_slope 10 --device -1
+> python noise_machine.py --duration 60 --sweep_slope 10 --device -1
 
 ## Examples
 If you want to hear examples or just play the noise in your background without dealing with python installation, go to https://dobri.dotov.com/noise where I've put a few long examples.
