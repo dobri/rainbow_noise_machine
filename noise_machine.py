@@ -12,14 +12,13 @@ Tester: Aurelia Sofia Dotov
 """
 import argparse
 import time as systime
-import sounddevice as sd
 import numpy as np
 assert np  # avoid "imported but unused" message (W0611)
 from scipy.io.wavfile import write
 import pyloudnorm as pyln
 import colorednoise as cn
 import warnings
-import wave
+
 
 class Oscillator:
     def __init__(self, a=-2, b=2, period = 60*5):
@@ -111,6 +110,7 @@ parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument('--list_devices', action='store_true',help='show list of audio devices and exit')
 args, remaining = parser.parse_known_args()
 if args.list_devices:
+    import sounddevice as sd
     print(sd.query_devices())
     parser.exit(0)
 parser = argparse.ArgumentParser(
@@ -166,6 +166,7 @@ if args.save or args.device == -1:
 
 # Sound player/writer
 if args.device == -1:
+    import wave
     o = None
     args.recording_size = int(args.duration*60*args.samplerate)
     args.number_of_blocks_in_recording = int(args.recording_size / args.blocksize)
@@ -174,6 +175,7 @@ if args.device == -1:
     w.setsampwidth(2)
     w.setframerate(args.samplerate)
 else:
+    import sounddevice as sd
     sd.default.latency = 'low'
     if args.device is None:
         o = sd.query_devices(device=sd.default.device[1])
